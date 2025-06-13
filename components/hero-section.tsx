@@ -1,64 +1,70 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play } from "lucide-react"
 import Image from "next/image"
-
+import { Star } from "lucide-react"
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
-          <main className="mx-auto mt-10 max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-            <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-              <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
-                <h1>
-                  <span className="block text-sm font-semibold uppercase tracking-wide text-primary">
-                    Welcome to the future
-                  </span>
-                  <span className="mt-1 block text-4xl tracking-tight font-extrabold sm:text-5xl xl:text-6xl">
-                    <span className="block text-foreground">Build amazing</span>
-                    <span className="block text-primary">experiences</span>
-                  </span>
-                </h1>
-                <p className="mt-3 text-base text-muted-foreground sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  Create stunning websites and applications with our modern, responsive components. Perfect for
-                  startups, agencies, and enterprises looking to make an impact.
-                </p>
-                <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <Button size="lg" className="flex items-center justify-center">
-                      Get Started
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="lg" className="flex items-center justify-center">
-                      <Play className="mr-2 h-4 w-4" />
-                      Watch Demo
-                    </Button>
-                  </div>
-                  <p className="mt-3 text-sm text-muted-foreground">Free 14-day trial. No credit card required.</p>
-                </div>
-              </div>
-              <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
-                <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
-                  <div className="relative block w-full bg-background rounded-lg overflow-hidden">
-                    <Image
-                      className="w-full rounded-lg"
-                      src="/placeholder.svg?height=400&width=600"
-                      alt="Hero illustration"
-                      width={600}
-                      height={400}
-                      priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg"></div>
-                  </div>
-                </div>
-              </div>
+    <section className="relative overflow-hidden bg-background py-16 sm:py-24 lg:py-32">
+      <div className="container mx-auto px-4 -my-16 sm:px-6 lg:px-8">
+        <div className="text-center">
+          {/* Text Content */}
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-8">
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20">
+                Loved by 1000+ customers with <Star className="ml-1 h-4 w-4 lg:mr-1 text-yellow-500" /> 4.9/5 rating
+              </span>
             </div>
-          </main>
+
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-6xl">
+              From <span className="text-primary">Fresh</span> produce to daily essentials, shop smarter
+            </h1>
+
+            
+
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button size="lg" className="w-full sm:w-auto text-base px-8 py-3">
+                Check the menu
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+
+          </div>
+
+          {/* Image Content */}
+          <div className="mx-auto mt-16 max-w-5xl sm:mt-20 lg:mt-16">
+            <div className="relative rounded-xl bg-background/5 p-2 ring-1 ring-inset ring-foreground/10 lg:rounded-2xl lg:p-4">
+              <Image
+                src="/hero-bg.png"
+                alt="SaaS Dashboard Preview"
+                width={1000}
+                height={600}
+                className="rounded-md shadow-2xl ring-1 ring-foreground/10"
+                priority
+              />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-background/20 via-transparent to-transparent lg:rounded-2xl"></div>
+            </div>
+          </div>
+
+          {/* Stats or Social Proof */}
+          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24">
+            <p className="text-center text-sm font-semibold leading-6 text-muted-foreground">
+              Trusted by over 10,000+ companies worldwide
+            </p>
+            <div className="mt-8 flex items-center justify-center gap-x-8 gap-y-4 flex-wrap">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center justify-center">
+                  <div className="h-8 w-24 bg-muted rounded opacity-60"></div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Background decoration */}
-      <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-primary/5 to-transparent"></div>
+      <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
+        <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-primary to-secondary opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
+      </div>
     </section>
   )
 }

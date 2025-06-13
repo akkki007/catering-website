@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Responsive Navbar & Hero",
+  title: "Mona's Kitchen",
   description: "A responsive navbar and hero section with theme switching",
     generator: 'v0.dev'
 }

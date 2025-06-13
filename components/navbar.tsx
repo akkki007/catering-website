@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 import { ThemeSelector } from "@/components/theme-selector"
+import Image from "next/image"
+
+
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,10 +27,13 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">L</span>
-              </div>
-              <span className="font-bold text-xl text-foreground">Logo</span>
+             <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={32}
+                  height={32}
+                  className="h-48 w-48"
+                ></Image>
             </Link>
           </div>
 
@@ -50,7 +56,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             <ThemeSelector />
             <Button variant="outline" size="sm">
-              Sign In
+                Admin
             </Button>
             <Button size="sm">Get Started</Button>
           </div>
