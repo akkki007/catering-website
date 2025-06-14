@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Play } from "lucide-react"
 import Image from "next/image"
 import { Star } from "lucide-react"
+import Link from "next/link"
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background py-16 sm:py-24 lg:py-32">
@@ -15,17 +16,19 @@ export function HeroSection() {
               </span>
             </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-5xl">
               From <span className="text-primary">Fresh</span> produce to daily essentials, shop smarter
             </h1>
 
             
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto text-base px-8 py-3">
+              <Link href={"/menu"}>
+              <Button size="lg" className="w-full rounded-3xl sm:w-auto text-base px-8 py-3">
                 Check the menu
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
+              </Link>
             </div>
 
           </div>
@@ -44,20 +47,6 @@ export function HeroSection() {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-background/20 via-transparent to-transparent lg:rounded-2xl"></div>
             </div>
           </div>
-
-          {/* Stats or Social Proof */}
-          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24">
-            <p className="text-center text-sm font-semibold leading-6 text-muted-foreground">
-              Trusted by over 10,000+ companies worldwide
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-x-8 gap-y-4 flex-wrap">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center justify-center">
-                  <div className="h-8 w-24 bg-muted rounded opacity-60"></div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -65,6 +54,9 @@ export function HeroSection() {
       <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
         <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-primary to-secondary opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
       </div>
+
+      
+
     </section>
   )
 }
