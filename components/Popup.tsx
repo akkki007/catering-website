@@ -8,46 +8,32 @@ const ModernOffersPopup = () => {
 
   const offers = [
     {
-      type: "trending",
-      badge: "🔥 Trending Now",
-      title: "Special Maharashtrian Thali",
-      subtitle: "Most Ordered This Week",
-      description: "Authentic homestyle thali with dal, bhaji, rice, chapati, pickle & sweet",
-      originalPrice: "₹250",
-      offerPrice: "₹199",
+      type: "traditional",
+      badge: "🔥 Traditional Special",
+      title: "Fresh Modak",
+      subtitle: "₹40 Per Piece",
+      description: "Perfect balance of soft rice flour exterior and sweet coconut-jaggery filling—authentic and irresistibly delicious!",
+      originalPrice: "₹50",
+      offerPrice: "₹40",
       discount: "20% OFF",
-      image: "🍛",
-      features: ["Fresh & Hot", "Home Style", "4.8 ⭐ Rating"],
-      urgency: "Only 15 orders left today!",
-      bgGradient: "from-orange-400 via-red-400 to-pink-500"
-    },
-    {
-      type: "offer",
-      badge: "💰 Best Deal",
-      title: "Tiffin Subscription",
-      subtitle: "Monthly Special Offer",
-      description: "Get healthy, fresh meals delivered daily to your doorstep",
-      originalPrice: "₹4500",
-      offerPrice: "₹3299",
-      discount: "27% OFF",
-      image: "🥘",
-      features: ["30 Days", "Free Delivery", "Customizable"],
-      urgency: "Offer expires in 2 days!",
-      bgGradient: "from-green-400 via-blue-400 to-purple-500"
+      image: "🥟",
+      features: ["Fresh Made", "Traditional Recipe", "Sweet Coconut Filling"],
+      urgency: "Limited quantity available today!",
+      bgGradient: "from-orange-400 via-yellow-400 to-orange-500"
     },
     {
       type: "festival",
-      badge: "🎉 Festival Special",
+      badge: "🎉 दिवाळी फराळ",
       title: "Diwali Faral Box",
-      subtitle: "Traditional Sweets & Snacks",
-      description: "Premium collection of traditional Diwali sweets and savory items",
+      subtitle: "Festival Special Collection",
+      description: "Traditional Diwali sweets and snacks collection featuring authentic homemade faral varieties",
       originalPrice: "₹800",
       offerPrice: "₹599",
       discount: "25% OFF",
-      image: "🍮",
-      features: ["10+ Varieties", "Fresh Made", "Gift Packaging"],
+      image: "🪔",
+      features: ["10+ Varieties", "Fresh Made", "Festival Special"],
       urgency: "Pre-order now for Diwali!",
-      bgGradient: "from-yellow-400 via-orange-400 to-red-500"
+      bgGradient: "from-pink-500 via-red-400 to-orange-500"
     }
   ];
 
