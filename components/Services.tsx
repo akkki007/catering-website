@@ -1,61 +1,100 @@
-import React from 'react'
-import { Button } from './ui/button'
-import Service from './Service'
+"use client"
+import React, { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import Service from './Service';
 
-const Services = () => {
-  return (
-   <section className='py-12 sm:py-16 lg:py-24'>
-  <div className='container px-4 mx-auto max-w-screen-xl'>
-    <h2 className='mb-4 text-3xl font-semibold tracking-tighter text-center text-gray-900 dark:text-white sm:text-4xl lg:text-5xl'>
-  Our Services
-</h2>
-<div className='w-40 h-1 bg-yellow-400 mx-auto mb-8 sm:mb-12 rounded-full'></div>
-
-    
-    {/* Centered grid with justify-center */}
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 justify-items-center'>
-      <Service
-  imageUrl="/tiffin.jpg"
-  title="Tiffin Service"
-  description="A tiffin in the Indian context refers to a light meal or snack, typically eaten between breakfast and dinner, and is especially common during lunch hours.
-Daily fresh meals"
-  buttonText="Learn More"
-/>
-<Service
-  imageUrl="/catering.jpeg"
-  title="Catering Service"
-  description="Professional catering services for all your special events, parties, and corporate gatherings. We customize menus according to your preferences and dietary requirements."
-  buttonText="Learn More"
-/>
-<Service
-  imageUrl="/modak_dish.png"
-  title="Modak Dish"
-  description="Modak, Lord Ganesha's beloved sweet, offers a delightful taste of Maharashtrian tradition. These soft, steamed dumplings are filled with a luscious blend of fresh coconut and sweet jaggery, creating an irresistible treat"
-  buttonText="Learn More"
-/>
- <Service
-  imageUrl="/tiffin.jpg"
-  title="Tiffin Service"
-  description="A tiffin in the Indian context refers to a light meal or snack, typically eaten between breakfast and dinner, and is especially common during lunch hours.
-Daily fresh meals"
-  buttonText="Learn More"
-/>
-<Service
-  imageUrl="/catering.jpeg"
-  title="Catering Service"
-  description="Professional catering services for all your special events, parties, and corporate gatherings. We customize menus according to your preferences and dietary requirements."
-  buttonText="Learn More"
-/>
-<Service
-  imageUrl="/modak_dish.png"
-  title="Modak Dish"
-  description="Boost your online presence with our expert marketing strategies."
-  buttonText="Learn More"
-/>
-    </div>
-  </div>
-</section>
-  )
+interface ServiceData {
+  id: string;
+  img?: string;
+  title?: string;
+  description?: string;
+  [key: string]: any;
 }
 
-export default Services
+const Services = () => {
+  const [services, setServices] = useState<ServiceData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Services'));
+        console.log(querySnapshot);
+        
+        interface ServiceData {
+          id: string;
+          img?: string;
+          title?: string;
+          description?: string;
+          [key: string]: any;
+        }
+        const servicesData: ServiceData[] = [];
+        
+        querySnapshot.forEach((doc) => {
+          servicesData.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        console.log(servicesData);
+        setServices(servicesData);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className='py-12 sm:py-16 lg:py-24'>
+        <div className='container px-4 mx-auto max-w-screen-xl'>
+          <h2 className='mb-4 text-3xl font-semibold tracking-tighter text-center text-gray-900 sm:text-4xl lg:text-5xl'>
+            Our Services
+          </h2>
+          <div className='w-40 h-1 bg-yellow-400 mx-auto mb-8 sm:mb-12 rounded-full'></div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 justify-items-center'>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="w-full bg-gray-100 rounded-lg p-4 animate-pulse">
+                <div className="h-48 bg-gray-200 rounded-md mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                <div className="h-10 bg-gray-200 rounded w-32"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className='py-12 sm:py-16 lg:py-24'>
+      <div className='container px-4 mx-auto max-w-screen-xl'>
+        <h2 className='mb-4 text-3xl font-semibold tracking-tighter text-center text-gray-900 sm:text-4xl lg:text-5xl'>
+          Our Services
+        </h2>
+        <div className='w-40 h-1 bg-yellow-400 mx-auto mb-8 sm:mb-12 rounded-full'></div>
+        
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 justify-items-center'>
+          {services.map((service) => (
+            <Service
+              key={service.id}
+              imageUrl={service.img || "/default-service.jpg"}
+              title={service.title || "Our Service"}
+              description={service.description || "Premium service with quality assurance"}
+              buttonText="Learn More" // Default button text as requested
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Services;
