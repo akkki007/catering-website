@@ -23,6 +23,7 @@ interface Product {
   price: string
   photolink?: string
   category?: string
+  popupOkay?: string // Add popupOkay field
 }
 
 interface PopupProps {
@@ -293,7 +294,9 @@ const ProductsPage: React.FC = () => {
   }, [searchTerm, products])
 
   const openPopup = (product: Product) => {
-    setSelectedProduct(product)
+    if (product.popupOkay === 'yes') {
+      setSelectedProduct(product)
+    }
   }
 
   const closePopup = () => {
