@@ -49,7 +49,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileMenuOpen, setIsMobi
                 <a><Home className="w-4 h-4 mr-3" />Home Page</a>
               </Button>
             </Link>
-            <Link href="/trending" passHref legacyBehavior>
+            <Link href="/admin/trending" passHref legacyBehavior>
               <Button asChild variant={activeTab === "trending" ? "default" : "ghost"} className={`w-full justify-start ${activeTab === "trending" ? "bg-stone-200 text-stone-900" : "text-stone-600"}`}>
                 <a><TrendingUp className="w-4 h-4 mr-3" />Trending</a>
               </Button>
