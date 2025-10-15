@@ -18,7 +18,7 @@ interface Product {
   description: string
   photolink: string
   price: string
-  popupOkay?: string
+  pinned?: string
 }
 
 // Add image compression utility
@@ -125,7 +125,15 @@ export default function ProductManagement() {
         id: doc.id,
         ...doc.data(),
       })) as Product[]
-      setProducts(productsData)
+      
+      // Sort products: pinned first, then by creation order
+      const sortedProducts = productsData.sort((a, b) => {
+        if (a.pinned === "yes" && b.pinned !== "yes") return -1
+        if (a.pinned !== "yes" && b.pinned === "yes") return 1
+        return 0
+      })
+      
+      setProducts(sortedProducts)
     } catch (error) {
       console.error("Error fetching products:", error)
       message.error("Failed to fetch products")
@@ -136,17 +144,36 @@ export default function ProductManagement() {
 
   const handleAdd = () => {
     setEditingProduct(null)
-    form.resetFields()
     setPreviewUrl(null)
     setCurrentImageUrl("")
+    form.resetFields()
+    // Set default values for new products
+    form.setFieldsValue({
+      title: "",
+      description: "",
+      price: "",
+      pinned: "no",
+      photolink: ""
+    })
     setIsModalOpen(true)
   }
 
   const handleEdit = (record: Product) => {
     setEditingProduct(record)
-    form.setFieldsValue(record)
     setPreviewUrl(null)
     setCurrentImageUrl(record.photolink || "")
+    
+    // Use setTimeout to ensure form is ready before setting values
+    setTimeout(() => {
+      form.setFieldsValue({
+        title: record.title || "",
+        description: record.description || "",
+        price: record.price || "",
+        pinned: record.pinned || "no",
+        photolink: record.photolink || ""
+      })
+    }, 0)
+    
     setIsModalOpen(true)
   }
 
@@ -208,8 +235,20 @@ export default function ProductManagement() {
       const values = await form.validateFields()
       console.log("Form values after validation:", values)
 
-      if (!values.photolink) {
+      // For editing: if no new image uploaded, keep the current image
+      if (editingProduct && !values.photolink && currentImageUrl) {
+        values.photolink = currentImageUrl
+      }
+
+      // For new products: must have an image
+      if (!editingProduct && !values.photolink) {
         message.error("Please upload an image before submitting")
+        return
+      }
+
+      // For editing: if still no photolink, show error
+      if (editingProduct && !values.photolink) {
+        message.error("Product must have an image")
         return
       }
 
@@ -229,6 +268,8 @@ export default function ProductManagement() {
       setIsModalOpen(false)
       setPreviewUrl(null)
       setCurrentImageUrl("")
+      setEditingProduct(null)
+      form.resetFields()
       fetchProducts()
     } catch (error) {
       console.error("Error submitting product:", error)
@@ -250,6 +291,8 @@ export default function ProductManagement() {
   const handleModalCancel = () => {
     setIsModalOpen(false)
     setCurrentImageUrl("")
+    setEditingProduct(null)
+    form.resetFields()
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl)
       setPreviewUrl(null)
@@ -258,9 +301,11 @@ export default function ProductManagement() {
 
   // Mobile-friendly product card component
   const ProductCard = ({ product }: { product: Product }) => (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+    <div className={`bg-white rounded-lg shadow-md p-4 mb-4 border transition-shadow duration-300 hover:shadow-lg ${
+      product.pinned === "yes" ? "border-blue-300 bg-blue-50" : "border-gray-200"
+    }`}>
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-shrink-0 self-center sm:self-start">
+        <div className="flex-shrink-0 self-center sm:self-start relative">
           <Image
             src={product.photolink || "/placeholder.svg"}
             alt="Product"
@@ -268,19 +313,26 @@ export default function ProductManagement() {
             height={120}
             className="object-cover rounded-lg w-full sm:w-[120px] h-[120px]"
           />
+          {product.pinned === "yes" && (
+            <div className="absolute -top-2 -right-2 bg-blue-600 text-white rounded-full p-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate">{product.title}</h3>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 truncate">{product.title}</h3>
+            {product.pinned === "yes" && (
+              <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                Pinned
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
             <span className="text-lg font-bold text-green-600">{product.price}</span>
-            <span
-              className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                product.popupOkay === "yes" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-              }`}
-            >
-              Popup: {product.popupOkay === "yes" ? "Yes" : "No"}
-            </span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button
@@ -312,6 +364,16 @@ export default function ProductManagement() {
       key: "title",
       width: isTablet ? 150 : 200,
       ellipsis: true,
+      render: (text, record) => (
+        <div className="flex items-center gap-2">
+          <span>{text}</span>
+          {record.pinned === "yes" && (
+            <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+            </svg>
+          )}
+        </div>
+      ),
     },
     {
       title: "Description",
@@ -327,14 +389,14 @@ export default function ProductManagement() {
       width: 100,
     },
     {
-      title: "Popup",
-      dataIndex: "popupOkay",
-      key: "popupOkay",
+      title: "Pinned",
+      dataIndex: "pinned",
+      key: "pinned",
       width: 80,
       render: (val) => (
         <span
           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-            val === "yes" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            val === "yes" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-600"
           }`}
         >
           {val === "yes" ? "Yes" : "No"}
@@ -378,7 +440,13 @@ export default function ProductManagement() {
       form={form}
       layout="vertical"
       preserve={false}
-      key={editingProduct ? editingProduct.id : "new"}
+      initialValues={{
+        title: editingProduct?.title || "",
+        description: editingProduct?.description || "",
+        price: editingProduct?.price || "",
+        pinned: editingProduct?.pinned || "no",
+        photolink: editingProduct?.photolink || ""
+      }}
       className="space-y-4"
     >
       <Form.Item name="title" label="Title" rules={[{ required: true, message: "Please input the title!" }]}>
@@ -397,14 +465,14 @@ export default function ProductManagement() {
         <Input prefix="₹" size={isMobile ? "large" : "middle"} />
       </Form.Item>
 
-      <Form.Item name="popupOkay" label="Popup Okay" rules={[{ required: true, message: "Please select popup okay!" }]}>
+      <Form.Item name="pinned" label="Pin to Top" rules={[{ required: true, message: "Please select pin option!" }]}>
         <Radio.Group size={isMobile ? "large" : "middle"}>
-          <Radio value="yes">Yes</Radio>
-          <Radio value="no">No</Radio>
+          <Radio value="yes">Yes - Show on top</Radio>
+          <Radio value="no">No - Normal order</Radio>
         </Radio.Group>
       </Form.Item>
 
-      <Form.Item name="photolink" label="Image URL" rules={[{ required: true, message: "Please upload an image!" }]}>
+      <Form.Item name="photolink" label="Product Image" rules={[{ required: !editingProduct, message: "Please upload an image!" }]}>
         <div className="flex flex-col gap-3">
           <Input type="hidden" />
           <input
@@ -415,28 +483,53 @@ export default function ProductManagement() {
             className="hidden"
             disabled={uploading}
           />
-          <Button
-            onClick={() => document.getElementById("product-image-upload")?.click()}
-            loading={uploading}
-            size={isMobile ? "large" : "middle"}
-            className="w-full sm:w-auto"
-          >
-            {uploading ? "Uploading..." : "Upload Image"}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              onClick={() => document.getElementById("product-image-upload")?.click()}
+              loading={uploading}
+              size={isMobile ? "large" : "middle"}
+              className="w-full sm:w-auto"
+            >
+              {uploading ? "Uploading..." : editingProduct ? "Change Image" : "Upload Image"}
+            </Button>
+            {editingProduct && (
+              <p className="text-xs text-gray-500">
+                Leave empty to keep current image, or upload a new one to replace it.
+              </p>
+            )}
+          </div>
 
-          {currentImageUrl && (
-            <div className="text-xs text-gray-500 break-all p-2 bg-gray-50 rounded">Current URL: {currentImageUrl}</div>
+          {currentImageUrl && !previewUrl && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">Current Image:</p>
+              <div className="flex justify-center">
+                <Image
+                  src={currentImageUrl}
+                  alt="Current product image"
+                  width={200}
+                  height={200}
+                  className="object-cover border rounded-lg max-w-full h-auto"
+                />
+              </div>
+              <div className="text-xs text-gray-500 break-all p-2 bg-gray-50 rounded">
+                Current URL: {currentImageUrl}
+              </div>
+            </div>
           )}
 
-          {(previewUrl || currentImageUrl) && (
-            <div className="flex justify-center">
-              <Image
-                src={previewUrl || currentImageUrl}
-                alt="Preview"
-                width={200}
-                height={200}
-                className="object-cover border rounded-lg max-w-full h-auto"
-              />
+          {previewUrl && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">New Image Preview:</p>
+              <div className="flex justify-center">
+                <Image
+                  src={previewUrl}
+                  alt="New image preview"
+                  width={200}
+                  height={200}
+                  className="object-cover border rounded-lg max-w-full h-auto border-blue-300"
+                />
+              </div>
+              <p className="text-xs text-blue-600 text-center">This new image will replace the current one</p>
             </div>
           )}
         </div>
@@ -511,6 +604,7 @@ export default function ProductManagement() {
                       showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                     }}
                     className="min-w-full"
+                    rowClassName={(record) => record.pinned === "yes" ? "bg-blue-50" : ""}
                   />
                 </div>
               )}
