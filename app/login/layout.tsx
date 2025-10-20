@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Poppins} from "next/font/google"
+// @ts-ignore: CSS module without type declarations
 import "../globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 

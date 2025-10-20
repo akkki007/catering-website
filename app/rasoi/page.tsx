@@ -272,7 +272,7 @@ Keep it concise - max 4-5 translations per item. Focus on commonly used terms.`
 }
 
 // Initialize Groq service
-const GROQ_API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY || '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'
+const GROQ_API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY || ''
 let groqService: OptimizedGroqService | null = null
 
 if (GROQ_API_KEY) {
