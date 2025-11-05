@@ -204,19 +204,14 @@ export default function ModernOffersPopup() {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Button
-              className={`w-full ${theme.bg} ${theme.hover} text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]`}
-            >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Order Now - {offer.price}
-            </Button>
 
             <Button
               variant="outline"
               className={`w-full ${theme.border} ${theme.text} hover:bg-gray-50 font-semibold py-3 rounded-xl transition-all duration-300`}
+              onClick={() => window.open(`https://wa.me/919403580287?text=Hi, I'm interested in ordering ${offer.title}`, '_blank')}
             >
               <Phone className="w-4 h-4 mr-2" />
-              Call to Order
+              Message to Order
             </Button>
           </div>
 

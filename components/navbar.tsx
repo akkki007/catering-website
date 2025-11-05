@@ -61,7 +61,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src={navData.logo || "/placeholder.svg"} alt="Logo" width={32} height={32} className="h-8 w-8" />
+              <Image src={navData.logo || "/placeholder.svg"} alt="Logo" width={32} height={32} className="h-24 w-24" />
             </Link>
           </div>
 

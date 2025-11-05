@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ThemeSelector } from "@/components/theme-selector"
 import { LogOut, Home, Menu, X } from "lucide-react"
+import Link from "next/link"
 
 interface AdminNavbarProps {
   isMobileMenuOpen: boolean
@@ -27,10 +28,11 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ isMobileMenuOpen, setIsMobile
             </div>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
-            <Button variant="ghost" className="text-stone-700">
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Button>
+            <Link href="/admin" passHref legacyBehavior>
+              <Button asChild variant="ghost" className="text-stone-700">
+                <a><Home className="w-4 h-4 mr-2" />Home</a>
+              </Button>
+            </Link>
             <ThemeSelector />
           </nav>
         </div>
@@ -53,4 +55,4 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ isMobileMenuOpen, setIsMobile
   )
 }
 
-export default AdminNavbar; 
+export default AdminNavbar;

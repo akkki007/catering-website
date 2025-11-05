@@ -1,141 +1,188 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Phone } from "lucide-react"
-import { Navbar } from "@/components/navbar"
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "@/lib/firebase"
-import { CardCarousel } from "@/components/ui/card-carousel"
+import * as React from "react";
+import { useState, useEffect } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { cn } from "@/lib/utils";
+import { UtensilsCrossed, Calendar, Star, Clock } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Navbar } from "@/components/navbar";
 
-interface TrendingItem {
-  id: string
-  name: string
-  price: string
-  unit: string
-  image: string
-  category: string
-  rating: number
-  description: string
-  features: string[]
-  trending: boolean
-  discount: string
+interface MenuItem {
+  name: string;
+  description: string;
+  isVeg: boolean;
 }
 
-export default function Component() {
-   const images = [
-    { src: "/mjodak.png", alt: "Image 1" },
-    { src: "/modak_dish.png", alt: "Image 2" },
-    { src: "/tiffin.png", alt: "Image 3" },
-  ]
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [trendingItems, setTrendingItems] = useState<TrendingItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+interface TiffinDay {
+  id?: string;
+  day: string;
+  date: string;
+  items: MenuItem[];
+  isSpecial?: boolean;
+  specialNote?: string;
+  order?: number;
+}
+
+export default function TiffinShowcase() {
+  const [tiffinDays, setTiffinDays] = useState<TiffinDay[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTrendingItems = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "Trending"))
-        const items: TrendingItem[] = []
-        querySnapshot.forEach((doc) => {
-          const data = doc.data()
-          items.push({
-            id: doc.id,
-            name: data.name,
-            price: `₹${data.price}`,
-            unit: data.unit,
-            image: data.image || "/placeholder.svg?height=300&width=300",
-            category: data.category,
-            rating: data.rating,
-            description: data.description,
-            features: data.features || [],
-            trending: data.trending || false,
-            discount: `${data.discount}% OFF`,
-          })
-        })
-        setTrendingItems(items)
-      } catch (error) {
-        console.error("Error fetching trending items:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    fetchTiffinDays();
+  }, []);
 
-    fetchTrendingItems()
-  }, [])
+  const fetchTiffinDays = async () => {
+    try {
+      const q = query(collection(db, "TiffinMenu"), orderBy("order", "asc"));
+      const querySnapshot = await getDocs(q);
+      const days: TiffinDay[] = [];
+      querySnapshot.forEach((doc) => {
+        days.push({
+          id: doc.id,
+          ...doc.data(),
+        } as TiffinDay);
+      });
+      setTiffinDays(days);
+    } catch (error) {
+      console.error("Error fetching tiffin menu:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full bg-background">
       <Navbar />
-
-      {/* Trending Items Carousel */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <motion.div
-            className="text-center mb-12 text-2xl tracking-tighter"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Trending
-          </motion.div>
-
-          
-          <CardCarousel
-          images={images}
-          autoplayDelay={2000}
-          showPagination={true}
-          showNavigation={true}
-          />
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="mb-12 text-center">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <UtensilsCrossed className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+            This Week's Tiffin Menu
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            Homemade meals delivered fresh to your doorstep. Healthy, delicious, and made with love.
+          </p>
         </div>
-      </section>
 
-      {/* CTA Section */}
-      <motion.section
-        className="py-20 px-4 bg-gradient-to-r from-orange-500 to-amber-500"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl font-bold text-white mb-6">Ready to Order Your Favorites?</h2>
-            <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers and experience the best catering service in town
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-4 text-lg">
-                Browse Full Menu
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-4 text-lg bg-transparent"
+        {tiffinDays.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No menu available at the moment. Please check back later!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {tiffinDays.map((tiffin, index) => (
+              <Card
+                key={tiffin.id || index}
+                className={cn(
+                  "group relative overflow-hidden border transition-all duration-300",
+                  "hover:shadow-lg hover:-translate-y-1",
+                  tiffin.isSpecial
+                    ? "border-primary/50 bg-gradient-to-br from-primary/5 to-background"
+                    : "border-border bg-card"
+                )}
               >
-                <Phone className="w-5 h-5 mr-2" />
-                Call Now: +91 94035 80287
-              </Button>
-            </div>
-          </motion.div>
+                {tiffin.isSpecial && (
+                  <div className="absolute right-0 top-0">
+                    <div className="flex items-center gap-1 rounded-bl-lg bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                      <Star className="h-3 w-3 fill-current" />
+                      Special
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold text-foreground">{tiffin.day}</h2>
+                      <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {tiffin.date}
+                      </div>
+                    </div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                      <Clock className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+
+                  {tiffin.specialNote && (
+                    <div className="mb-4 rounded-lg bg-primary/10 px-3 py-2">
+                      <p className="text-xs font-medium text-primary">{tiffin.specialNote}</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    {tiffin.items.map((item, itemIndex) => (
+                      <div
+                        key={itemIndex}
+                        className="group/item flex items-start gap-3 rounded-lg border border-border/50 bg-background/50 p-3 transition-colors hover:bg-muted/50"
+                      >
+                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-green-500">
+                          <div className="h-2 w-2 rounded-full bg-green-500" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium text-foreground">{item.name}</h3>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{item.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+                    <Badge variant="secondary" className="text-xs">
+                      {tiffin.items.length} items
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">100% Vegetarian</span>
+                  </div>
+                </div>
+
+                <div
+                  className={cn(
+                    "absolute inset-0 -z-10 rounded-xl bg-gradient-to-br from-transparent via-muted/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  )}
+                />
+              </Card>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-12 rounded-2xl border border-border bg-card p-8 text-center">
+          <h3 className="mb-2 text-xl font-semibold text-foreground">
+            Subscribe to Our Tiffin Service
+          </h3>
+          <p className="mb-6 text-muted-foreground">
+            Get fresh, homemade meals delivered daily. Choose from weekly or monthly plans.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Badge variant="outline" className="px-4 py-2">
+              <Clock className="mr-2 h-4 w-4" />
+              Delivered by 12 PM
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2">
+              <Star className="mr-2 h-4 w-4" />
+              Fresh & Hygienic
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2">
+              <UtensilsCrossed className="mr-2 h-4 w-4" />
+              Homemade Taste
+            </Badge>
+          </div>
         </div>
-      </motion.section>
+      </div>
     </div>
-  )
+  );
 }
