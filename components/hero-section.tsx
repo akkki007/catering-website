@@ -56,7 +56,7 @@ export function HeroSection() {
         <div className="text-center">
           {/* Text Content */}
           <div className="mx-auto max-w-4xl">
-            <div className="mb-8">
+            <div className="mb-8 mt-5">
               <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20">
                 Loved by 1000+ customers with <Star className="ml-1 h-4 w-4 lg:mr-1 text-yellow-500" /> 4.9/5 rating
               </span>

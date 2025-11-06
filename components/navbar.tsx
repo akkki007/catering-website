@@ -15,7 +15,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [navData, setNavData] = useState({
     logo: "/logo.png",
-    cta: "Get Started",
     items: [
       { name: "Home", href: "/" },
       { name: "About", href: "/about" },
@@ -42,7 +41,6 @@ export function Navbar() {
 
           setNavData({
             logo: data.logo || "/logo.png",
-            cta: data.cta || "Get Started",
             items,
           })
         }
@@ -100,7 +98,7 @@ export function Navbar() {
                 Login
               </Button>
             </Link>
-            <Button size="sm">{navData.cta}</Button>
+            
           </div>
 
           {/* Mobile menu button */}
@@ -130,7 +128,6 @@ export function Navbar() {
                         Sign In
                       </Button>
                     </Link>
-                    <Button className="w-full">{navData.cta}</Button>
                   </div>
                 </div>
               </SheetContent>
