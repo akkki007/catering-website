@@ -93,12 +93,17 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            <a
+              href="tel:9970155508"
+              className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Contact Us: 9970155508
+            </a>
             <Link href={"/login"}>
               <Button variant="outline" size="sm">
                 Login
               </Button>
             </Link>
-            
           </div>
 
           {/* Mobile menu button */}
@@ -123,6 +128,12 @@ export function Navbar() {
                     </Link>
                   ))}
                   <div className="border-t pt-4 space-y-2">
+                    <a
+                      href="tel:9970155508"
+                      className="text-foreground hover:text-primary px-3 py-2 rounded-md text-base font-medium transition-colors block text-center"
+                    >
+                      Contact Us: 9970155508
+                    </a>
                     <Link href={"/login"}>
                       <Button variant="outline" className="w-full bg-transparent">
                         Sign In
