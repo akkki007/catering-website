@@ -1,13 +1,13 @@
 import React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Home, TrendingUp, Package, Layers, LogOut } from "lucide-react"
+import { Home, TrendingUp, Package, Layers, LogOut, Utensils } from "lucide-react"
 import { ThemeSelector } from "@/components/theme-selector"
 
 interface AdminSidebarProps {
   isMobileMenuOpen: boolean
   setIsMobileMenuOpen: (open: boolean) => void
-  activeTab: "home" | "trending" | "products" | "popups"
+  activeTab: "home" | "trending" | "products" | "popups" | "menu"
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileMenuOpen, setIsMobileMenuOpen, activeTab }) => {
@@ -62,6 +62,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMobileMenuOpen, setIsMobi
             <Link href="/popups" passHref legacyBehavior>
               <Button asChild variant={activeTab === "popups" ? "default" : "ghost"} className={`w-full justify-start ${activeTab === "popups" ? "bg-stone-200 text-stone-900" : "text-stone-600"}`}>
                 <a><Layers className="w-4 h-4 mr-3" />Popups</a>
+              </Button>
+            </Link>
+            <Link href="/admin/menu" passHref legacyBehavior>
+              <Button asChild variant={activeTab === "menu" ? "default" : "ghost"} className={`w-full justify-start ${activeTab === "menu" ? "bg-stone-200 text-stone-900" : "text-stone-600"}`}>
+                <a><Utensils className="w-4 h-4 mr-3" />Menu</a>
               </Button>
             </Link>
           </nav>

@@ -59,7 +59,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src={navData.logo || "/placeholder.svg"} alt="Logo" width={32} height={32} className="h-24 w-24" />
+              <Image src={navData.logo || "/placeholder.svg"} alt="Logo" width={64} height={64} className="h-32 w-32 object-contain" />
             </Link>
           </div>
 
@@ -94,10 +94,10 @@ export function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <a
-              href="tel:9970155508"
+              href="tel:+919403580287"
               className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              Contact Us: 9970155508
+              Contact Us: +91 94035 80287
             </a>
             <Link href={"/login"}>
               <Button variant="outline" size="sm">
@@ -129,10 +129,10 @@ export function Navbar() {
                   ))}
                   <div className="border-t pt-4 space-y-2">
                     <a
-                      href="tel:9970155508"
+                      href="tel:+919403580287"
                       className="text-foreground hover:text-primary px-3 py-2 rounded-md text-base font-medium transition-colors block text-center"
                     >
-                      Contact Us: 9970155508
+                      Contact Us: +91 94035 80287
                     </a>
                     <Link href={"/login"}>
                       <Button variant="outline" className="w-full bg-transparent">

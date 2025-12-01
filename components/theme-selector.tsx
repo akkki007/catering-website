@@ -49,8 +49,11 @@ export function ThemeSelector() {
   const { theme, setTheme } = useTheme()
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme)
-    setOpen(false)
+    // Ensure the theme is valid and properly typed
+    if (["blue", "purple", "green", "orange"].includes(newTheme)) {
+      setTheme(newTheme as "blue" | "purple" | "green" | "orange")
+      setOpen(false)
+    }
   }
 
   return (
